@@ -1,73 +1,52 @@
 import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from groq import Groq
 from dotenv import load_dotenv
 
-# 환경 변수 로드
+# .env 파일에서 환경 변수 로드
 load_dotenv()
 
 app = Flask(__name__)
+# 프론트엔드からの 모든 출처에서의 요청을 허용
+CORS(app) 
 
-# CORS 설정: 개발 환경에서는 모든 오리진 허용 (배포 시 수정 필요)
-CORS(app)
-
-# Groq API Key 확인 (사용을 위해 .env 파일 설정 필요)
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-
-@app.route('/api/health', methods=['GET'])
-def health_check():
-    """서버 상태 확인용 엔드포인트"""
-    return jsonify({
-        "status": "healthy",
-        "service": "BizTone Converter API",
-        "version": "v1.0"
-    }), 200
+# Groq 클라이언트 초기화
+# API 키는 환경 변수 'GROQ_API_KEY'에서 자동으로 로드됩니다.
+try:
+    groq_client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    print("Groq client initialized successfully.")
+except Exception as e:
+    groq_client = None
+    print(f"Error initializing Groq client: {e}")
 
 @app.route('/api/convert', methods=['POST'])
 def convert_text():
     """
-    텍스트 변환 엔드포인트
-    Request Body: { "text": "...", "target": "boss" | "colleague" | "customer" }
+    텍스트 변환을 위한 API 엔드포인트.
+    Sprint 1에서는 실제 변환 로직 대신 더미 데이터를 반환합니다.
     """
-    try:
-        data = request.get_json()
-        
-        # 입력 유효성 검사
-        if not data:
-            return jsonify({"error": "No data provided"}), 400
-            
-        text = data.get('text', '').strip()
-        target = data.get('target', 'boss') # 기본값: 상사
+    data = request.json
+    original_text = data.get('text')
+    target = data.get('target')
 
-        if not text:
-            return jsonify({"error": "Text is required"}), 400
-            
-        if len(text) > 500:
-            return jsonify({"error": "Text exceeds 500 characters"}), 400
+    if not original_text or not target:
+        return jsonify({"error": "텍스트와 변환 대상은 필수입니다."}), 400
 
-        # TODO: 실제 Groq AI API 연동 구현 (Sprint 3)
-        # 현재는 Phase 1 단계이므로 더미 응답 반환
-        
-        # 더미 변환 로직 (테스트용)
-        mock_prefix = {
-            "boss": "[상사용 변환] ",
-            "colleague": "[동료용 변환] ",
-            "customer": "[고객용 변환] "
-        }
-        converted_text = f"{mock_prefix.get(target, '[변환] ')} {text} (실제 AI 변환은 추후 구현됩니다.)"
+    # Sprint 1: 실제 Groq API 호출 대신 더미 응답 반환
+    dummy_response = f"'{original_text}'를 '{target}'에게 보내는 말투로 변환한 결과입니다. (이것은 더미 응답입니다.)"
+    
+    response_data = {
+        "original_text": original_text,
+        "converted_text": dummy_response,
+        "target": target
+    }
+    
+    return jsonify(response_data)
 
-        response_data = {
-            "original": text,
-            "converted": converted_text,
-            "target": target,
-            "status": "success_mock"
-        }
-        
-        return jsonify(response_data), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+@app.route('/')
+def index():
+    return "BizTone Converter 백엔드 서버가 실행 중입니다."
 
 if __name__ == '__main__':
-    # 로컬 개발 서버 실행
     app.run(debug=True, port=5000)
