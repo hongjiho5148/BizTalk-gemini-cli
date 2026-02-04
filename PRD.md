@@ -129,12 +129,12 @@
   - Flask 백엔드 서버 기본 구조 구축 및 CORS 설정
   - Groq AI API 연동 초기 구현 (더미 응답 또는 간단한 테스트 연동)
 
-### 2단계: 프론트엔드 UI 개발 (완료 목표: Sprint 2)
+### 2단계: 프론트엔드 UI 개발 (완료)
 - **주요 내용**:
-  - HTML, CSS, JavaScript를 이용한 반응형 UI 구현 (입력창, 대상 선택, 결과 표시 영역, 복사 버튼)
-  - 대상의 값은 상사(Upward), 타팀 동료(Lateral), 고객(External)
-  - 백엔드 API와의 비동기 통신 로직 구현 (Fetch API)
-  - backend/app.py에 정적인 페이지 라우팅 로직을 추가하기
+  - HTML, CSS, JavaScript를 이용한 반응형 UI 구현 (입력창, 대상 선택, 결과 표시 영역, 복사 버튼) - **완료**
+  - 대상의 값은 상사(Upward), 타팀 동료(Lateral), 고객(External) - **완료**
+  - 백엔드 API와의 비동기 통신 로직 구현 (Fetch API) - **완료**
+  - backend/app.py에 정적인 페이지 라우팅 로직을 추가하기 - **완료**
 
 ### 3단계: 백엔드 로직 구현 (완료 목표: Sprint 3)
 - **주요 내용**:
