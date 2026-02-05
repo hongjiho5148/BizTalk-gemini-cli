@@ -6,66 +6,205 @@
     <title>BizTone Converter - 업무 말투 변환기</title>
     <!-- Pretendard Webfont -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#3B82F6', // Modern Blue
+                            hover: '#2563EB',
+                            light: '#60A5FA',
+                        },
+                        text: {
+                            primary: '#111827', // Gray 900
+                            secondary: '#4B5563', // Gray 600
+                            muted: '#9CA3AF', // Gray 400
+                        },
+                        success: '#10B981',
+                        error: '#EF4444',
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                        'glow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                        'inner-light': 'inset 0 2px 4px 0 rgba(255, 255, 255, 0.3)',
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F3F4F6;
+        }
+        
+        /* Glassmorphism Background Blobs */
+        .bg-blobs {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            background: linear-gradient(to bottom right, #EFF6FF, #F3F4F6);
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: 0.6;
+            animation: blob 7s infinite;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #BFDBFE; animation-delay: 0s; }
+        .blob-2 { bottom: -10%; right: -10%; width: 500px; height: 500px; background: #DDD6FE; animation-delay: 2s; }
+        .blob-3 { top: 40%; left: 40%; width: 400px; height: 400px; background: #FECACA; animation-delay: 4s; opacity: 0.4;}
+
+        textarea::-webkit-scrollbar {
+            width: 6px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background-color: #E5E7EB;
+            border-radius: 3px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background-color: #D1D5DB;
+        }
+        
+        input[type="radio"]:checked + label {
+            background-color: #FFFFFF;
+            color: #2563EB;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            font-weight: 700;
+        }
+
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <header>
-            <h1>BizTone Converter</h1>
-            <p class="subtitle">당신의 생각을 전문적인 비즈니스 언어로 변환해 드립니다.</p>
+<body class="font-sans min-h-screen flex justify-center py-12 px-4 sm:px-6 lg:px-8 leading-relaxed text-text-primary selection:bg-blue-100 selection:text-blue-900">
+    
+    <!-- Dynamic Background -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="w-full max-w-6xl relative z-10">
+        <header class="text-center mb-16 animate-fade-in-up">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 drop-shadow-sm">
+                    BizTone Converter
+                </span>
+            </h1>
+            <p class="text-lg md:text-xl text-text-secondary font-medium opacity-90">
+                당신의 생각을 <span class="font-bold text-gray-800">품격 있는 비즈니스 언어</span>로 레벨업하세요.
+            </p>
         </header>
 
-        <main class="converter-wrapper">
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
             <!-- 입력 영역 -->
-            <section class="card input-card">
-                <div class="target-selection">
-                    <label>변환 대상:</label>
-                    <div class="radio-group">
-                        <input type="radio" id="upward" name="target" value="Upward" checked>
-                        <label for="upward">상사</label>
-                        
-                        <input type="radio" id="lateral" name="target" value="Lateral">
-                        <label for="lateral">동료</label>
-                        
-                        <input type="radio" id="external" name="target" value="External">
-                        <label for="external">고객</label>
+            <section class="group relative animate-fade-in-up" style="animation-delay: 0.1s;">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-blue-300 to-purple-300 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                <div class="relative h-full bg-white/60 backdrop-blur-xl rounded-2xl shadow-glass border border-white/50 p-8 flex flex-col">
+                    
+                    <div class="mb-6">
+                        <label class="block text-sm font-bold text-text-secondary uppercase tracking-wider mb-3">Target Audience</label>
+                        <div class="flex p-1.5 bg-gray-100/50 backdrop-blur-sm rounded-xl w-fit border border-gray-200/50">
+                            <input type="radio" id="upward" name="target" value="Upward" class="hidden" checked>
+                            <label for="upward" class="px-6 py-2.5 rounded-lg cursor-pointer text-sm font-semibold text-text-secondary transition-all duration-300 hover:text-blue-600">상사</label>
+                            
+                            <input type="radio" id="lateral" name="target" value="Lateral" class="hidden">
+                            <label for="lateral" class="px-6 py-2.5 rounded-lg cursor-pointer text-sm font-semibold text-text-secondary transition-all duration-300 hover:text-blue-600">동료</label>
+                            
+                            <input type="radio" id="external" name="target" value="External" class="hidden">
+                            <label for="external" class="px-6 py-2.5 rounded-lg cursor-pointer text-sm font-semibold text-text-secondary transition-all duration-300 hover:text-blue-600">고객</label>
+                        </div>
                     </div>
-                </div>
 
-                <div class="textarea-wrapper">
-                    <textarea id="originalText" placeholder="변환하고 싶은 내용을 입력하세요. (예: 아까 말한 거 다 했어요)" maxlength="500"></textarea>
-                    <div class="char-count">
-                        <span id="currentCharCount">0</span> / 500
+                    <div class="relative flex-grow mb-6 group/textarea">
+                        <textarea id="originalText" 
+                            class="w-full h-80 md:h-[400px] p-6 bg-white/50 border border-gray-200 rounded-xl resize-none text-base md:text-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent focus:bg-white transition-all duration-300 placeholder:text-gray-400 shadow-inner-light" 
+                            placeholder="변환하고 싶은 내용을 편하게 입력하세요.&#13;&#10;(예: 아까 말한 거 수정해서 보냈어요)" 
+                            maxlength="500"></textarea>
+                        <div class="absolute bottom-4 right-4 text-xs font-semibold text-text-muted bg-white/80 px-2 py-1 rounded-md backdrop-blur-sm border border-gray-100">
+                            <span id="currentCharCount">0</span> / 500
+                        </div>
                     </div>
-                </div>
 
-                <button id="convertBtn" class="btn-primary">
-                    <span class="btn-text">변환하기</span>
-                    <div class="spinner hidden"></div>
-                </button>
+                    <button id="convertBtn" class="w-full relative overflow-hidden bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white py-4 rounded-xl text-lg font-bold shadow-lg shadow-blue-500/30 transition-all duration-300 transform active:scale-[0.98] flex justify-center items-center group/btn">
+                        <div class="absolute inset-0 w-full h-full bg-white/20 transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
+                        <span class="btn-text relative z-10 flex items-center gap-2">
+                            <span>✨</span> 변환하기
+                        </span>
+                        <div class="spinner hidden relative z-10"></div>
+                    </button>
+                </div>
             </section>
 
             <!-- 결과 영역 -->
-            <section class="card result-card">
-                <div class="result-header">
-                    <label>변환 결과:</label>
-                </div>
-                
-                <div class="textarea-wrapper">
-                    <textarea id="convertedText" readonly placeholder="여기에 변환 결과가 표시됩니다."></textarea>
-                </div>
+            <section class="group relative animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-purple-300 to-pink-300 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500"></div>
+                <div class="relative h-full bg-white/60 backdrop-blur-xl rounded-2xl shadow-glass border border-white/50 p-8 flex flex-col">
+                    <div class="mb-4 flex justify-between items-end">
+                        <label class="block text-sm font-bold text-text-secondary uppercase tracking-wider">Converted Message</label>
+                        <div id="copyFeedback" class="text-sm text-green-600 font-bold hidden animate-fade-in-up flex items-center gap-1 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            복사 완료!
+                        </div>
+                    </div>
+                    
+                    <div class="relative flex-grow mb-6">
+                        <textarea id="convertedText" readonly 
+                            class="w-full h-80 md:h-full min-h-[400px] p-6 bg-gray-50/50 border border-transparent rounded-xl resize-none text-base md:text-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-white transition-all duration-300 shadow-inner-light" 
+                            placeholder="AI가 세련된 비즈니스 말투로 변환해 드립니다."></textarea>
+                    </div>
 
-                <div class="result-actions">
-                    <button id="copyBtn" class="btn-secondary">
-                        <span class="copy-icon">📋</span> 복사하기
+                    <button id="copyBtn" class="w-full bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 py-4 rounded-xl text-base font-bold shadow-sm transition-all duration-300 flex justify-center items-center gap-2 group/copy">
+                        <span class="group-hover/copy:scale-110 transition-transform duration-200">📋</span> 
+                        <span class="group-hover/copy:text-gray-900">결과 복사하기</span>
                     </button>
-                    <div id="copyFeedback" class="feedback-msg hidden">복사되었습니다!</div>
                 </div>
             </section>
         </main>
 
-        <div id="errorMsg" class="error-msg hidden">
-            오류가 발생했습니다. 잠시 후 다시 시도해주세요.
+        <div id="errorMsg" class="hidden mt-8 max-w-md mx-auto text-center text-red-600 bg-red-50/90 backdrop-blur-sm p-4 rounded-xl font-medium border border-red-100 shadow-sm animate-fade-in-up">
+            ⚠️ 오류가 발생했습니다. 잠시 후 다시 시도해주세요.
         </div>
     </div>
     <script src="js/script.js"></script>
