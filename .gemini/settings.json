@@ -6,7 +6,7 @@
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_API_KEY}"
       },
-      "timeout": 10000,
+      "timeout": 30000,
       "trust": false
     },
     "context7": {
